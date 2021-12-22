@@ -33,17 +33,15 @@ def part1(data):
 def part2(data):
 
     binary_matrix = np.array([[int(digit) for digit in binary] for binary in data])
-    oxygen = caculate_rating(binary_matrix, 0, 'max')
-    c02 = caculate_rating(binary_matrix, 0, 'min')
+    oxygen = caculate_rating(binary_matrix, 0, 'oxygen')
+    c02 = caculate_rating(binary_matrix, 0, 'c02')
     print(oxygen*c02)
         
 def caculate_rating(data, index, setting):
     if len(data) == 1:
-        rating = int("".join(str(x) for x in data[0]), 2)
-        return rating
+        return int("".join(str(x) for x in data[0]), 2)
 
-    zeros = []
-    ones = []
+    zeros, ones = [], []
 
     for row in data:
         if row[index] == 0:
@@ -51,14 +49,15 @@ def caculate_rating(data, index, setting):
         else:
             ones.append(row)
 
-    if setting == 'max':
+    if setting == 'oxygen':
         bit_criteria = np.array(data.sum(axis=0) >= (len(data) / 2), dtype=int)
     else:
         bit_criteria = np.array(data.sum(axis=0) < (len(data) / 2), dtype=int)
 
-    filtered_data = ones
     if bit_criteria[index] == 0:
         filtered_data = zeros
+    else:
+        filtered_data = ones
 
     index += 1
     return caculate_rating(np.array(filtered_data), index, setting)
