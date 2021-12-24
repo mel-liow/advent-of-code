@@ -34,18 +34,37 @@ def check_bingo(board):
     return np.any(rows == 0) or np.any(cols == 0)
 
 
+def part1(random_numbers, boards):
+    for i in random_numbers:
+        for key in list(boards):
+            boards[key] = find_value(i, boards[key])
+            if check_bingo(boards[key]):
+                sum = np.nansum(boards[key])
+                return i*sum
+
+
+def part2(random_numbers, boards):
+    for i in random_numbers:
+        for key in list(boards):
+            boards[key] = find_value(i, boards[key])
+            if check_bingo(boards[key]):
+                sum = np.nansum(boards[key])
+                if len(boards.keys()) == 1:
+                    return i*sum
+                
+                del boards[key]
+
+
 def main(path):
     raw_data = read_data(path)
 
     random_numbers, boards = parse_data(raw_data)
+    solution1 = part1(random_numbers, boards)
+    solution2 = part2(random_numbers, boards)
 
-    for i in random_numbers:
-        for key, board in boards.items():
-            boards[key] = find_value(i, board)
-            if check_bingo(boards[key]):
-                sum = np.nansum(boards[key])
-                print(f'score:', i*sum)
-                return
+    print(f'solution1: ', solution1),
+    print(f'solution2: ', solution2)
+    
 
 if __name__ == "__main__":
     path = "input.txt"
