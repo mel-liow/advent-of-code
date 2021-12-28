@@ -5,29 +5,19 @@ days_new_fish_rest = 2
 days_internal_cycle = 6
 days_max_cycle = days_new_fish_rest + days_internal_cycle
 
-
 def read_data(path):
     with open(path, "r") as f:
         data = f.read().splitlines()
         input = [int(el) for el in data[0].split(',')]
     return input
 
-def get_initial_state(data):
-    
-    initial_state = defaultdict(int)
-    for i in range(days_max_cycle+1):
-        initial_state[i] = data.count(i)
-
-    return initial_state
-
 def get_new_state(previous_state):
-    days_max_cycle = 8
-    
     state = defaultdict(int)
+
     for i in range(days_max_cycle+1):
         if i == days_max_cycle:
             state[i] = previous_state[0]
-        elif i == 6:
+        elif i == days_internal_cycle:
             state[i] = previous_state[i+1] + previous_state[0]
         else:
             state[i] = previous_state[i+1]
@@ -35,19 +25,20 @@ def get_new_state(previous_state):
     return state
 
 def total_count(state):
-    
     count = 0
+    
     for key, vals in state.items():
         count += vals
     
     return count
 
 def part1(data, days):
-    
-    for i in range(days+1):
-        if i == 0:
-            state = get_initial_state(data)
-        else:
+    state = defaultdict(int)
+
+    for i in range(days_max_cycle+1):
+        state[i] = data.count(i)
+
+    for i in range(1, days+1):
             previous_state = state
             state = get_new_state(previous_state)
 
